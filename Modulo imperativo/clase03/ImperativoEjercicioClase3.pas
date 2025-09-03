@@ -82,7 +82,7 @@ procedure InformarSociosOrdenCreciente (a: arbol);
   
   procedure InformarDatosSociosOrdenCreciente (a: arbol);
   begin
-    if ((a <> nil) then begin 
+    if (a <> nil) then begin 
 		InformarDatosSociosOrdenCreciente (a^.HI);
 		writeln ('Numero: ', a^.dato.numero, ' Nombre: ', a^.dato.nombre, ' Edad: ', a^.dato.edad);
 		InformarDatosSociosOrdenCreciente (a^.HD);
@@ -94,6 +94,29 @@ Begin
  writeln ('----- Socios en orden creciente por numero de socio ----->');
  writeln;
  InformarDatosSociosOrdenCreciente (a);
+ writeln;
+ writeln ('//////////////////////////////////////////////////////////');
+ writeln;
+end;
+
+
+procedure InformarSociosOrdenDecreciente (a: arbol);
+{ Informar los datos de los socios en orden decreciente. }
+  
+  procedure InformarDatosSociosOrdenDecreciente (a: arbol);
+  begin
+    if (a <> nil) then begin 
+		InformarDatosSociosOrdenDecreciente (a^.HD);
+		writeln ('Numero: ', a^.dato.numero, ' Nombre: ', a^.dato.nombre, ' Edad: ', a^.dato.edad);
+		InformarDatosSociosOrdenDecreciente (a^.HI);
+	end;		
+  end;
+
+Begin
+ writeln;
+ writeln ('----- Socios en orden decreciente por numero de socio ----->');
+ writeln;
+ InformarDatosSociosOrdenDecreciente (a);
  writeln;
  writeln ('//////////////////////////////////////////////////////////');
  writeln;
@@ -166,16 +189,93 @@ begin
   writeln;
 end;
 
+procedure InformarExistenciaNombreSocio (a:arbol);
+
+procedure LeerNombre(var nom:cadena15);
+begin
+	writeln('Ingresar nombre de socio: ');
+	readln(nom);
+end;
+
+function BuscarSocio(a:arbol;n:cadena15):boolean;
+var vf:boolean = false;
+begin
+
+	if(a <> nil)and (a^.dato.nombre <> n)then begin
+		BuscarSocio(a^.HD,n);
+		BuscarSocio(a^.HI,n);
+		if(a^.dato.nombre = n)then
+			vf:= true;
+		end;
+	BuscarSocio:=vf;
+end;
+
+var
+	nom:cadena15;
+begin
+	LeerNombre(nom);
+	if(BuscarSocio(a,nom))then
+		writeln('El numbre ingresado se encuentra en la lista')
+	else
+		writeln('El nombre ingresado no se encuentra en la lista');
+end;
+
+
+
+
+procedure InformarCantidadSocios(a:arbol);
+
+	procedure ContarSocios(a:arbol;var cant:integer);
+		begin
+			if(a <> nil)then begin
+				ContarSocios(a^.HD,cant);
+				ContarSocios(a^.HI,cant);
+				cant:= cant + 1;
+			end;
+	end;
+var
+	cant:integer= 0;
+begin
+	ContarSocios(a,cant);
+	writeln('La cantidad de socios es de: ',cant);
+end;
+
+
+procedure InformarPromedioDeEdad(a:arbol);
+
+	procedure SumarEdades(a:arbol;var acu,cant:integer);
+	begin
+		if(a <> nil)then begin
+			cant:= cant +1;
+			acu:= acu + a^.dato.edad;
+			SumarEdades(a^.HD,acu,cant);
+			SumarEdades(a^.HI,acu,cant);
+			end;
+	end;
+	
+	function promedio(acu,cant:integer):real;
+	begin
+		promedio:= acu/cant;
+	end;
+var
+	acu:integer = 0;
+	cant:integer = 0;
+begin
+
+	SumarEdades(a,acu,cant);
+	writeln('El promedio de edad de los socios es de: ',promedio(acu,cant):0:2);
+end;
+
 var a: arbol; 
 Begin
   randomize;
   GenerarArbol (a);
   InformarSociosOrdenCreciente (a);
-  {InformarSociosOrdenDecreciente (a); COMPLETAR}
+  InformarSociosOrdenDecreciente (a); //COMPLETAR}
   InformarNumeroSocioConMasEdad (a);
   AumentarEdadNumeroImpar (a);
-  { InformarExistenciaNombreSocio (a); COMPLETAR
-    InformarCantidadSocios (a); COMPLETAR
-    InformarPromedioDeEdad (a); COMPLETAR
-  }   
+  InformarExistenciaNombreSocio (a);// COMPLETAR
+  InformarCantidadSocios (a); //COMPLETAR
+  InformarPromedioDeEdad (a); //COMPLETAR
+   
 End.
