@@ -118,7 +118,7 @@ begin
 	ini:= 1;
 	fin:= maxvec;
 	pos:= fin div 2;
-	writeln('Ingrese valor a abuscar: ');
+	writeln('Ingrese valor a buscar: ');
 	readln(dato);
 	busquedaDicotomica(v,ini,fin,dato,pos);
 	writeln(pos);
