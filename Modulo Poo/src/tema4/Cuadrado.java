@@ -18,15 +18,16 @@ public class Cuadrado extends Figura{
     public void setLado(double unLado){
         lado=unLado;
     }
-
+    @Override
     public double calcularArea(){
        return (getLado()* getLado());
     }
-    
+    @Override
     public double calcularPerimetro(){
        return (getLado()*4);
     }
     
+    @Override
     public String toString(){
        String aux = super.toString() + 
                     " Lado: " + getLado();
