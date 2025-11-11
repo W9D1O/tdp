@@ -1,0 +1,106 @@
+programa tp2ej3b
+
+procesos
+
+  proceso limpiarFlores(ES cantidad:numero)
+  comenzar
+    repetir 9
+      mientras(HayFlorEnLaEsquina)
+        tomarFlor
+        cantidad:= cantidad + 1
+      mover
+    mientras(HayFlorEnLaEsquina)
+      tomarFlor
+      cantidad:= cantidad + 1
+  fin    
+  proceso limpiarPapeles(ES cantidad:numero)
+  comenzar
+    repetir 9
+      mientras(HayPapelEnLaEsquina)
+        tomarPapel
+        cantidad:= cantidad + 1
+      mover
+    mientras(HayPapelEnLaEsquina)
+      tomarPapel
+      cantidad:= cantidad + 1              
+  fin    
+areas
+  ciudadA: AreaP(1,1,20,1)
+  ciudadA2: AreaP(21,1,40,1)
+  ciudadB: AreaP(1,5,20,5)
+  ciudadB2: AreaP(21,5,40,5)
+robots
+  robot A1
+  variables
+    flores:numero
+  comenzar
+    flores:= 0
+    derecha
+    limpiarFlores(flores)
+    Pos(21,1)
+    
+    limpiarFlores(flores)
+    EnviarMensaje(flores,r2)
+  fin
+  
+  robot A2
+  variables
+    flores:numero
+    floresA1:numero
+  comenzar
+    derecha
+    limpiarFlores(flores)
+    Pos(31,1)
+    
+    limpiarFlores(flores)    
+    RecibirMensaje(floresA1,r1)
+    flores:= flores + floresA1
+    Informar(flores)
+  fin
+  
+  robot B1
+  variables
+    papeles:numero
+  comenzar
+    papeles:= 0
+    derecha
+    limpiarPapeles(papeles)
+    Pos(21,5)
+    
+    limpiarPapeles(papeles)
+    EnviarMensaje(papeles,r4)
+  fin
+  
+  robot B2
+  variables
+    papeles,papelesB1:numero
+  comenzar
+    derecha
+    limpiarPapeles(papeles)
+    Pos(31,5)
+    
+    limpiarPapeles(papeles)
+    RecibirMensaje(papelesB1,r3)
+    papeles:= papeles + papelesB1
+    Informar(papeles)
+  fin
+variables
+  r1:A1
+  r2:A2
+  r3:B1
+  r4:B2
+  
+comenzar
+  AsignarArea(r1,ciudadA)
+  AsignarArea(r2,ciudadA)
+  AsignarArea(r1,ciudadA2)
+  AsignarArea(r2,ciudadA2)
+  AsignarArea(r3,ciudadB)
+  AsignarArea(r4,ciudadB)
+  AsignarArea(r3,ciudadB2)
+  AsignarArea(r4,ciudadB2)
+  Iniciar(r1,1,1)
+  Iniciar(r2,11,1)
+  Iniciar(r3,1,5)
+  Iniciar(r4,11,5)
+fin    

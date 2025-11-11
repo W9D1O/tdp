@@ -1,0 +1,184 @@
+programa tp2ej1c
+
+procesos
+
+  proceso juntarFlores(ES cantidad: numero)
+  comenzar
+    mientras(HayFlorEnLaEsquina)
+      tomarFlor
+      cantidad:= cantidad + 1 
+  fin
+  
+  proceso recorre(ES cantidad: numero)
+  comenzar
+    repetir 9
+      juntarFlores(cantidad)
+      mover
+    juntarFlores(cantidad)
+  fin  
+
+  proceso mensajes(E canF: numero)
+  variables
+    id:numero
+  comenzar
+    RecibirMensaje(id,fiscalizador)
+    EnviarMensaje(id,fiscalizador)
+    EnviarMensaje(canF,fiscalizador)
+  fin
+  
+  proceso obtenerMayores(E num:numero ES numMayor1:numero ES numMayor2:numero)
+  comenzar
+    si(num > numMayor1)
+      numMayor1:= num
+    sino
+      si(num > numMayor2)
+        numMayor2:= num
+  fin
+  proceso obtenerDiff(ES diff: numero E cf1:numero E cf2:numero E cf3:numero E cf4:numero E cf5:numero E cf6:numero)
+  variables
+    max1,max2:numero
+  comenzar
+    max1:= -1
+    max2:= -1
+    obtenerMayores(cf1,max1,max2)
+    obtenerMayores(cf2,max1,max2)
+    obtenerMayores(cf3,max1,max2)
+    obtenerMayores(cf4,max1,max2)
+    obtenerMayores(cf5,max1,max2)
+    obtenerMayores(cf6,max1,max2)
+    diff:= max1 - max2      
+  fin
+    
+  proceso receptor(ES diff:numero E id1:numero E id2:numero E id3:numero E id4:numero E id5:numero E id6:numero)
+  variables
+    canFR1,canFR2,canFR3:numero
+    canFR4,canFR5,canFR6:numero
+    id:numero  
+  comenzar
+    repetir 6
+      RecibirMensaje(id,*)
+      si(id = id1)
+        RecibirMensaje(canFR1,r1)
+      sino
+        si(id = id2)
+          RecibirMensaje(canFR2,r2)
+        sino
+          si(id = id3)
+            RecibirMensaje(canFR3,r3)
+          sino
+            si(id = id4)
+              RecibirMensaje(canFR4,r4)
+            sino
+              si(id = id5)
+                RecibirMensaje(canFR5,r5)
+              sino
+                si(id = id6)
+                  RecibirMensaje(canFR6,r6)
+    obtenerDiff(diff,canFR1,canFR2,canFR3,canFR4,canFR5,canFR6)  
+  fin
+  
+areas
+  ciudadA: AreaP(1,1,1,10)
+  ciudadB: AreaP(2,11,2,20)
+  ciudadC: AreaP(3,21,3,30)
+  ciudadD: AreaP(4,31,4,40)
+  ciudadE: AreaP(5,41,5,50)
+  ciudadF: AreaP(6,51,6,60)
+  ciudadNeutral: AreaP(2,1,2,1)
+  
+robots
+  robot robot1
+  variables
+    canF:numero
+  comenzar
+    canF:= 0
+    recorre(canF)
+    mensajes(canF)
+  fin
+  
+  robot robot2
+  variables
+    canF:numero
+  comenzar
+    canF:= 0
+    recorre(canF)
+    mensajes(canF)
+  fin
+  robot robot3
+  variables
+    canF:numero
+  comenzar
+    canF:= 0
+    recorre(canF)
+    mensajes(canF)
+  fin
+  robot robot4
+  variables
+    canF:numero
+  comenzar
+    canF:= 0
+    recorre(canF)
+    mensajes(canF)
+  fin
+  robot robot5
+  variables
+    canF:numero
+  comenzar
+    canF:= 0
+    recorre(canF)
+    mensajes(canF)
+  fin
+  robot robot6
+  variables
+    canF:numero
+  comenzar
+    canF:= 0
+    recorre(canF)
+    mensajes(canF)
+  fin        
+  robot robotF
+  variables
+    id,idR1,idR2:numero
+    idR3,idR4,idR5:numero
+    idR6,diff:numero
+  comenzar
+    idR1:= 1
+    idR2:= 2
+    idR3:= 3
+    idR4:= 4
+    idR5:= 5
+    idR6:= 6
+    EnviarMensaje(idR1,r1)
+    EnviarMensaje(idR2,r2)
+    EnviarMensaje(idR3,r3)
+    EnviarMensaje(idR4,r4)
+    EnviarMensaje(idR5,r5)
+    EnviarMensaje(idR6,r6)
+    receptor(diff,idR1,idR2,idR3,idR4,idR5,idR6)
+
+    Informar(diff)  
+  fin
+variables
+  r1:robot1
+  r2: robot2
+  r3:robot3
+  r4:robot4
+  r5:robot5
+  r6:robot6
+  fiscalizador:robotF
+comenzar
+  AsignarArea(r1,ciudadA)
+  AsignarArea(r2,ciudadB)
+  AsignarArea(r3,ciudadC)
+  AsignarArea(r4,ciudadD)
+  AsignarArea(r5,ciudadE)
+  AsignarArea(r6,ciudadF)
+  AsignarArea(fiscalizador,ciudadNeutral)
+  Iniciar(r1,1,1)
+  Iniciar(r2,2,11)
+  Iniciar(r3,3,21)
+  Iniciar(r4,4,31)
+  Iniciar(r5,5,41)
+  Iniciar(r6,6,51)
+  Iniciar(fiscalizador,2,1)
+fin

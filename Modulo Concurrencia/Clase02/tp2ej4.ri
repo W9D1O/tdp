@@ -1,0 +1,156 @@
+programa tp2ej4
+
+
+procesos
+  proceso asignarID
+  comenzar
+    EnviarMensaje(1,r1)
+    EnviarMensaje(2,r2)
+    EnviarMensaje(3,r3)
+    EnviarMensaje(4,r4)
+  fin
+  
+  proceso gestionarAcceso(ES ta:numero)
+  variables
+    num:numero
+  comenzar
+    Random(num,1,4)
+    si(num = 1)
+      EnviarMensaje(r1,V)
+      ta:= ta + 1
+    sino
+      si(num = 2)
+        EnviarMensaje(r2,V)
+        ta:= ta + 1
+      sino
+        si(num = 3)
+          EnviarMensaje(r3,V)
+          ta:= ta + 1
+        sino
+          EnviarMensaje(r4,V)
+          ta:= ta + 1      
+  fin
+  
+  proceso obtenerPosicionInicial(ES av:numero ES ca:numero)
+  comenzar
+    av:= PosAv
+    ca:= PosCa
+  fin
+  
+  proceso obtenerMaximo(E cantidad:numero E id: numero ES maximo:numero ES idM:numero)
+  comenzar
+    si(cantidad > maximo)
+      maximo:= cantidad
+      idM:= id
+  fin
+  
+  proceso recolectar(ES cantidad:numero)
+  comenzar
+    si(HayFlorEnLaEsquina) | (HayPapelEnLaEsquina)
+      mientras(HayPapelEnLaEsquina)
+        tomarPapel
+        cantidad:= cantidad + 1
+      mientras(HayFlorEnLaEsquina)
+        cantidad:= cantidad + 1  
+  fin
+  proceso ganador(E id:numero)
+  comenzar
+    si(id = 1)
+      EnviarMensaje(V,r1)
+    sino
+      EnviarMensaje(F,r1)
+    si(id = 2)
+      EnviarMensaje(V,r2)
+    sino
+      EnviarMensaje(F,r2)
+    si(id = 3)
+      EnviarMensaje(V,r3)
+    sino
+      EnviarMensaje(F,r3)
+    si(id = 4)
+      EnviarMensaje(V,r4)
+    sino
+      EnviarMensaje(F,r4)              
+  fin
+areas
+  ciudadRC: AreaPC(25,25,75,75)
+  ciudadF: AreaP(1,1,1,1)
+  ciudadR1: AreaP(25,1,25,1)
+  ciudadR2: AreaP(30,1,30,1)
+  ciudadR3: AreaP(35,1,35,1)
+  ciudadR4: AreaP(40,1,40,1)
+ 
+  
+robots
+  robot fiscal
+  variables
+    trabajadores:numero
+    cantidad,maximo,id,idmaximo:numero
+    finalizado: boolean
+  comenzar
+    Pos(1,1)
+    trabajadores:= 0
+    maximo:= -1
+    asignarID
+    repetir 10
+      gestionarAcceso(trabajadores)
+      si(trabajadores = 4)
+        RecibirMensaje(finalizado,*)
+        si(finalizado)
+          trabajadores:= trabajadores - 1
+          finalizado:= ~finalizado
+    EnviarMensaje(F,r1)
+    EnviarMensaje(F,r2)
+    EnviarMensaje(F,r3)
+    EnviarMensaje(F,r4)
+    repetir 4
+      RecibirMensaje(id,*)
+      RecibirMensaje(cantidad,*)
+      obtenerMaximo(cantidad,id,maximo,idmaximo)
+    ganador(id)    
+  fin
+  robot recolector
+  variables
+    id,avR,caR,cantidad:numero
+    acceso:boolean
+    avA,caA:numero
+  comenzar
+    obtenerPosicionInicial(avA,caA)
+    cantidad:= 0
+    RecibirMensaje(id,ficalizador)
+    RecibirMensaje(acceso,fiscalizador)
+    bucle:= acceso
+    mientras(acceso)
+      Random(avR,25,75)
+      Random(caR,25,75)
+      recolectar(cantidad)
+      Pos(avA,caA)
+      EnviarMensaje(acceso,fiscalizador)
+      RecibirMensaje(acceso,fiscalizador)
+    EnviarMensaje(id,fiscalizador)
+    EnviarMensaje(cantidad,fiscalizador)
+    RecibirMensaje(acceso,fiscalizador)
+    si(acceso)
+      Pos(50,50)     
+  fin
+
+variables
+  r1,r2,r3,r4:recolector
+  fiscalizador:fiscal
+comenzar
+  AsignarArea(fiscalizador,ciudadF)
+  AsignarArea(r1,ciudadR1)
+  AsignarArea(r2,ciudadR2)
+  AsignarArea(r3,ciudadR3)
+  AsignarArea(r4,ciudadR4)
+  AsignarArea(r1,ciudadRC)
+  AsignarArea(r2,ciudadRC)
+  AsignarArea(r3,ciudadRC)
+  AsignarArea(r4,ciudadRC)
+  Iniciar(fiscalizador,1,1)
+  Iniciar(r1,25,1)
+  Iniciar(r2,30,1)
+  Iniciar(r3,35,1)
+  Iniciar(r4,40,1)
+fin
+ 

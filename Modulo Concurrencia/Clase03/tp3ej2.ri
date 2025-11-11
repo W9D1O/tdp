@@ -1,0 +1,179 @@
+programa tp3ej2
+
+
+procesos
+
+  proceso calcularZonaConflicto(ES av:numero ES ca:numero E iniAv:numero E longitud: numero)
+  variables
+    coordenadaFinal:numero
+  comenzar
+    coordenadaFinal:= 0
+    mientras(longitud <> 0)
+      coordenadaFinal:= coordenadaFinal + longitud
+      longitud:= longitud - 1
+    ca:= coordenadaFinal + 1
+    si(iniAv > 1)
+      coordenadaFinal:= -coordenadaFinal
+    av:= iniAv  + coordenadaFinal    
+  fin
+
+
+  proceso reserva(E av:numero E ca:numero ES acceso: boolean)
+
+  comenzar
+    si(PosCa = ca) & ((PosAv + 1 = av) | (PosAv - 1 = av)) & (acceso = F)
+      BloquearEsquina(av,ca)
+      acceso:= V
+    sino
+      si(PosCa = ca) & ((PosAv + 1 = av) | (PosAv - 1 = av)) & (acceso)
+        LiberarEsquina(av,ca)
+        acceso:= F  
+  fin
+
+  proceso juntarPapeles(ES cantidad:numero)
+  comenzar
+    mientras(HayPapelEnLaEsquina)
+      tomarPapel
+      cantidad:= cantidad + 1
+  fin
+
+  proceso juntarFlores(ES cantidad:numero)
+  comenzar
+    mientras(HayFlorEnLaEsquina)
+      tomarFlor
+      cantidad:= cantidad + 1
+  fin
+
+
+  proceso floresOPapeles(E av:numero ES cantidad:numero)
+  comenzar
+    
+    si(PosAv < av)
+      juntarFlores(cantidad)  
+    sino
+      si(PosAv > av)
+        juntarPapeles(cantidad)
+  fin
+      
+
+  proceso tambienEsVertice(E iniAv:numero E iniCa:numero E avCon:numero E caCon:numero ES cantidad:numero)
+  comenzar
+    si(PosAv <> iniAv) & (PosCa <> iniCa) & (PosAv <> avCon) & (PosCa <> caCon)
+      floresOPapeles(avCon,cantidad)
+  fin
+
+  proceso primerTramo(E longitud:numero E dir1:numero E dir2:numero E r:numero E av:numero E ca:numero ES acc:boolean E iniPos:numero ES cantidad:numero E id:numero)
+
+  comenzar   
+    mientras(longitud <> 0)
+      repetir longitud 
+        mover
+      repetir dir1  
+        derecha
+      floresOPapeles(iniPos,cantidad)  
+      reserva(av,ca,acc)
+             
+      repetir longitud
+        mover
+      repetir dir2
+        derecha
+      longitud:= longitud - 1 
+    EnviarMensaje(id,r3)
+    repetir r
+      derecha
+    mover
+    reserva(av,ca,acc)              
+  fin
+  
+  proceso segundoTramo(E longitud:numero E dir1:numero E dir2:numero E pos:numero ES cantidad:numero)
+  
+  comenzar
+
+    mientras(longitud < 6)
+      repetir longitud 
+        mover
+      repetir dir1  
+        derecha
+      floresOPapeles(pos,cantidad)  
+      repetir longitud
+        mover
+      repetir dir2
+        derecha
+      longitud:= longitud + 1 
+           
+  fin
+  
+  
+areas
+  ciudad:AreaPC(1,1,31,30)
+
+robots
+  robot florero
+  variables
+    longitud,id:numero
+    av,ca:numero
+    acceso:boolean
+    iniPos,cantidad:numero
+  comenzar
+    cantidad:= 0
+    iniPos:= PosAv
+    acceso:= F
+    longitud:= 5
+    calcularZonaConflicto(av,ca,PosAv,longitud)
+    RecibirMensaje(id,r3)
+    primerTramo(longitud,1,3,3,av,ca,acceso,iniPos,cantidad,id)
+    longitud:= 2
+    segundoTramo(longitud,1,3,iniPos,cantidad)
+    Informar(cantidad)
+    EnviarMensaje(V,r3)
+  fin
+
+  robot papelero
+  variables
+    longitud,id:numero
+    av,ca:numero
+    acceso:boolean
+    iniPos,cantidad:numero
+  comenzar
+    iniPos:= PosAv
+    cantidad:= 0
+    longitud:= 5
+    acceso:= F
+    calcularZonaConflicto(av,ca,PosAv,longitud)
+    RecibirMensaje(id,r3)
+    primerTramo(longitud,3,1,1,av,ca,acceso,iniPos,cantidad,id)
+    longitud:= 2
+    segundoTramo(longitud,3,1,iniPos,cantidad)
+    Informar(cantidad)
+    EnviarMensaje(V,r3)
+  fin
+  
+  robot jefe
+  variables
+    pri,segun:numero
+    termino:boolean
+  comenzar
+    pri:= 0
+    segun:= 0
+    EnviarMensaje(1,r1)
+    EnviarMensaje(2,r2)
+    RecibirMensaje(pri,*)
+    RecibirMensaje(segun,*)
+    repetir 2
+      RecibirMensaje(termino,*)
+    Informar(pri)  
+  fin
+  
+variables
+  r1:florero
+  r2:papelero
+  r3:jefe
+comenzar
+
+  AsignarArea(r1,ciudad)
+  AsignarArea(r2,ciudad)
+  AsignarArea(r3,ciudad)
+  Iniciar(r1,1,1)
+  Iniciar(r2,31,1)
+  Iniciar(r3,15,1)
+fin  

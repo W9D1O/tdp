@@ -1,0 +1,119 @@
+programa tp3ej1
+
+procesos
+  proceso juntarFlores(ES cantidad:numero)
+  comenzar
+    mientras(HayFlorEnLaEsquina)
+      tomarFlor
+      cantidad:= cantidad + 1
+  fin  
+  
+  proceso juntarPapeles(ES cantidad:numero)
+  comenzar
+    mientras(HayPapelEnLaEsquina)
+      tomarPapel
+      cantidad:= cantidad + 1
+  fin
+  
+  
+  proceso posicionRandom(E avMin:numero E avMax:numero E caMin:numero E caMax:numero ES avB:numero ES caB:numero)
+  variables
+    av,ca:numero
+  comenzar
+    Random(av,avMin,avMax)
+    Random(ca,caMin,caMax)
+    BloquearEsquina(av,ca)
+    Pos(av,ca)
+    avB:= av
+    caB:= ca
+  fin
+  
+  proceso vaciarBolsa(E av:numero E ca:numero E cantidad:numero)
+  comenzar
+    
+    repetir cantidad
+      BloquearEsquina(10,10)
+      Pos(10,10)
+      si(HayFlorEnLaBolsa)
+        depositarFlor
+      sino
+        si(HayPapelEnLaBolsa)
+          depositarPapel  
+      Pos(av,ca)
+      LiberarEsquina(10,10)
+  fin
+  
+areas
+  ciudadFlores: AreaPC(1,1,5,10)
+  ciudadPapeles: AreaPC(6,1,10,9)
+  EsquinaF1: AreaP(6,10,6,10)
+  EsquinaF2: AreaP(7,10,7,10)
+  EsquinaP1: AreaP(8,10,8,10)
+  EsquinaP2: AreaP(9,10,9,10)
+  deposito: AreaC(10,10,10,10)
+  
+  
+robots
+  robot florero
+  variables
+    avMin,avMax,caMin,caMax:numero
+    avB,avO,caB,caO,cantidad: numero
+  comenzar
+    cantidad:= 0
+    avMin:= 1
+    avMax:= 5
+    caMin:= 1
+    caMax:=10
+    avO:= PosAv
+    caO:= PosCa
+    repetir 5
+      posicionRandom(avMin,avMax,caMin,caMax,avB,caB)
+      juntarFlores(cantidad)
+      Pos(avO,caO) 
+      LiberarEsquina(avB,caB)
+           
+    vaciarBolsa(avO,caO,cantidad)
+  fin
+  
+  robot papelero
+  variables
+    avMin,avMax,caMin,caMax:numero
+    avB,avO,caB,caO,cantidad:numero
+  comenzar
+    cantidad:= 0
+    avMin:= 6
+    avMax:= 10
+    caMin:= 1
+    caMax:=9
+    avO:= PosAv
+    caO:= PosCa
+    repetir 3
+      posicionRandom(avMin,avMax,caMin,caMax,avB,caB)
+      juntarPapeles(cantidad)
+      Pos(avO,caO)
+      LiberarEsquina(avB,caB)
+      
+    vaciarBolsa(avO,caO,cantidad)
+  fin
+  
+variables
+  f1,f2:florero
+  p1,p2:papelero
+comenzar
+  AsignarArea(f1,EsquinaF1)
+  AsignarArea(f2,EsquinaF2)
+  AsignarArea(p1,EsquinaP1)
+  AsignarArea(p2,EsquinaP2)
+  AsignarArea(f1,ciudadFlores)
+  AsignarArea(f2,ciudadFlores)
+  AsignarArea(p1,ciudadPapeles)
+  AsignarArea(p2,ciudadPapeles)
+  AsignarArea(f1,deposito)
+  AsignarArea(f2,deposito)
+  AsignarArea(p1,deposito)
+  AsignarArea(p2,deposito)
+  Iniciar(f1,6,10)
+  Iniciar(f2,7,10)
+  Iniciar(p1,8,10)
+  Iniciar(p2,9,10)
+fin      

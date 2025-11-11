@@ -1,0 +1,86 @@
+programa tp2ej3
+
+procesos
+  proceso girar
+  comenzar
+    si(PosAv < 2)
+      derecha  
+  fin
+
+  proceso limpiarFlores(ES cantidad:numero)
+  comenzar
+    repetir 9
+      mientras(HayFlorEnLaEsquina)
+        tomarFlor
+        cantidad:= cantidad + 1
+      mover
+  fin    
+  proceso limpiarPapeles(ES cantidad:numero)
+  comenzar
+    repetir 9
+      mientras(HayPapelEnLaEsquina)
+        tomarPapel
+        cantidad:= cantidad + 1
+      mover        
+  fin    
+areas
+  ciudadA: AreaP(1,1,20,1)
+  ciudadB: AreaP(1,5,20,5)
+  
+robots
+  robot A1
+  variables
+    flores:numero
+  comenzar
+    flores:= 0
+    girar
+    limpiarFlores(flores)
+    EnviarMensaje(flores,r2)
+  fin
+  
+  robot A2
+  variables
+    flores:numero
+  comenzar
+    derecha
+    RecibirMensaje(flores,r1)
+    limpiarFlores(flores)
+    Informar(flores)
+  fin
+  
+  robot B1
+  variables
+    papeles:numero
+  comenzar
+    papeles:= 0
+    girar
+    limpiarPapeles(papeles)
+    EnviarMensaje(papeles,r4)
+  fin
+  
+  robot B2
+  variables
+    papeles:numero
+  comenzar
+    derecha
+    RecibirMensaje(papeles,r3)
+    limpiarPapeles(papeles)
+    Informar(papeles)
+  fin
+variables
+  r1:A1
+  r2:A2
+  r3:B1
+  r4:B2
+  
+comenzar
+  AsignarArea(r1,ciudadA)
+  AsignarArea(r2,ciudadA)
+  AsignarArea(r3,ciudadB)
+  AsignarArea(r4,ciudadB)
+  Iniciar(r1,1,1)
+  Iniciar(r2,11,1)
+  Iniciar(r3,1,5)
+  Iniciar(r4,11,5)
+  
+fin    

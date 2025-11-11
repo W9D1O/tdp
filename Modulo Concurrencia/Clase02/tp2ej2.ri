@@ -1,0 +1,101 @@
+programa tp2ej2
+
+
+procesos
+
+  proceso escalon
+  variables
+    ancho,alto:numero
+  comenzar
+    ancho:= 1
+    Random(alto,1,5)
+    repetir alto
+      mover
+  fin
+  proceso esquina(ES flores:numero ES papeles:numero)
+  comenzar
+    mientras (HayFlorEnLaEsquina) | (HayPapelEnLaEsquina)
+      si(HayPapelEnLaEsquina)
+        mientras(HayPapelEnLaEsquina)
+          papeles:= papeles + 1
+          tomarPapel
+      sino
+        si(HayFlorEnLaEsquina)
+          mientras(HayFlorEnLaEsquina)
+            flores:= flores + 1
+            tomarFlor
+  fin
+  proceso escalera(ES cant:numero)
+  variables
+    flores,papeles:numero
+  comenzar
+    flores:= 0
+    papeles:= 0
+    repetir 4
+      esquina(flores,papeles)
+      escalon
+      esquina(flores,papeles)
+      derecha
+      escalon
+      si(flores > papeles)
+        cant:= cant + 1
+      flores:= 0
+      papeles:= 0  
+      repetir 3
+        derecha
+  fin
+areas
+  ciudadA: AreaC(1,1,100,100)
+
+robots
+  robot robot1
+  variables
+    cant:numero
+  comenzar
+    cant:= 0
+    escalera(cant)
+    EnviarMensaje(cant,rj)
+  fin
+  
+  robot robot2
+  variables
+    cant:numero
+  comenzar
+    cant:= 0
+    escalera(cant)
+    EnviarMensaje(cant,rj)
+  fin  
+  robot robot3
+  variables
+    cant:numero
+  comenzar
+    cant:= 0
+    escalera(cant)
+    EnviarMensaje(cant,rj)
+  fin  
+  robot jefe
+  variables
+    total,cant:numero
+  comenzar
+    total:= 0
+    repetir 3
+      RecibirMensaje(cant,*)
+      total:= total + cant
+    Informar(total)  
+  fin
+variables
+  r1:robot1
+  r2:robot2
+  r3:robot3
+  rj:jefe
+comenzar
+  AsignarArea(rj,ciudadA)
+  AsignarArea(r1,ciudadA)
+  AsignarArea(r2,ciudadA)
+  AsignarArea(r3,ciudadA)
+  Iniciar(rj,1,1)
+  Iniciar(r1,2,1)
+  Iniciar(r2,7,1)
+  Iniciar(r3,12,1)
+
+fin 

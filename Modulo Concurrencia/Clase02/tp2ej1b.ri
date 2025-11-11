@@ -1,0 +1,84 @@
+programa tp2ej1b
+
+procesos
+
+  proceso juntarFlores(ES cantidad: numero)
+  comenzar
+    mientras(HayFlorEnLaEsquina)
+      tomarFlor
+      cantidad:= cantidad + 1 
+  fin
+  
+  proceso recorre(ES cantidad: numero)
+  comenzar
+    repetir 9
+      juntarFlores(cantidad)
+      mover
+    juntarFlores(cantidad)
+  fin  
+
+  proceso mensajes(E canF: numero)
+  variables
+    id:numero
+  comenzar
+    RecibirMensaje(id,fiscalizador)
+    EnviarMensaje(id,fiscalizador)
+    EnviarMensaje(canF,fiscalizador)
+  fin
+areas
+  ciudadA: AreaP(1,1,1,10)
+  ciudadB: AreaP(2,11,2,20)
+  ciudadNeutral: AreaP(2,1,2,1)
+  
+robots
+  robot robot1
+  variables
+    canF:numero
+  comenzar
+    canF:= 0
+    recorre(canF)
+    mensajes(canF)
+  fin
+  
+  robot robot2
+  variables
+    canF:numero
+  comenzar
+    canF:= 0
+    recorre(canF)
+    mensajes(canF)
+  fin
+  
+  robot robot3
+  variables
+    id,idR1,idR2:numero
+    canFR1,canFR2,diff:numero
+  comenzar
+    idR1:= 1
+    idR2:= 2
+    EnviarMensaje(idR1,r1)
+    EnviarMensaje(idR2,r2)
+    repetir 2
+      RecibirMensaje(id,*)
+      si(id = idR1)
+        RecibirMensaje(canFR1,r1)
+      sino
+        RecibirMensaje(canFR2,r2)
+    si(canFR1 > canFR2)
+      diff:= canFR1 - canFR2
+    sino
+      diff:= canFR2 -canFR1
+    Informar(diff)  
+  fin
+variables
+  r1:robot1
+  r2: robot2
+  fiscalizador:robot3
+comenzar
+  AsignarArea(r1,ciudadA)
+  AsignarArea(r2,ciudadB)
+  AsignarArea(fiscalizador,ciudadNeutral)
+  Iniciar(r1,1,1)
+  Iniciar(r2,2,11)
+  Iniciar(fiscalizador,2,1)
+fin
