@@ -1,0 +1,106 @@
+programa tp3ej4
+
+
+procesos
+  proceso juntarFlor(ES hay:boolean)
+  variables
+    vf:boolean
+  comenzar
+    vf:= F
+    BloquearEsquina(10,10)
+    Pos(10,10)
+    si(HayFlorEnLaEsquina)
+      tomarFlor
+      si(HayFlorEnLaEsquina)
+        vf:= V
+    hay:= vf    
+  fin
+  
+  proceso moverFlor
+  comenzar
+    BloquearEsquina(11,11)
+    Pos(11,11)
+    LiberarEsquina(10,10)
+    si(HayFlorEnLaBolsa)
+      depositarFlor
+  fin
+  
+  proceso asignarID
+  comenzar
+    EnviarMensaje(1,r1)
+    EnviarMensaje(2,r2)
+    EnviarMensaje(3,r3)
+    EnviarMensaje(4,r4)
+  fin
+  
+areas
+  esquinaR: AreaPC(10,10,10,10)
+  esquinaD: AreaPC(11,11,11,11)
+  ciudadC: AreaP(1,1,1,1)
+  ciudadR1: AreaP(9,9,9,9)
+  ciudadR2: AreaP(9,10,9,10)
+  ciudadR3: AreaP(9,11,9,11)
+  ciudadR4: AreaP(9,12,9,12)
+  
+robots
+  robot florero
+  variables
+    id,iniAv,iniCa:numero
+    vf:boolean
+  comenzar
+    RecibirMensaje(id,rc)
+    vf:= V
+    iniAv:= PosAv
+    iniCa:= PosCa
+    mientras(vf)
+      juntarFlor(vf)
+      moverFlor 
+      Pos(iniAv,iniCa)
+      LiberarEsquina(11,11)
+      si(vf = F)
+        EnviarMensaje(id,rc)
+      
+  fin  
+  
+  robot coordinador
+  variables
+    id:numero
+    iniA,iniC:numero
+  comenzar
+    iniA:= PosAv
+    iniC:= PosCa
+    asignarID
+    repetir 4
+      RecibirMensaje(id,*)
+    Informar(id)
+    Pos(11,11)
+    mientras(HayFlorEnLaEsquina)
+      tomarFlor  
+    Pos(iniA,iniC)  
+  fin
+  
+variables
+  r1,r2,r3,r4:florero
+  rc:coordinador
+comenzar
+  AsignarArea(rc,ciudadC)
+  AsignarArea(r4,ciudadR4)
+  AsignarArea(r3,ciudadR3)
+  AsignarArea(r2,ciudadR2) 
+  AsignarArea(r1,ciudadR1)
+  AsignarArea(r4,esquinaR)
+  AsignarArea(r3,esquinaR)
+  AsignarArea(r2,esquinaR)
+  AsignarArea(r1,esquinaR)
+  
+  AsignarArea(r4,esquinaD)
+  AsignarArea(r3,esquinaD)
+  AsignarArea(r2,esquinaD)
+  AsignarArea(rc,esquinaD)
+  AsignarArea(r1,esquinaD)
+  Iniciar(rc,1,1)
+  Iniciar(r4,9,12)
+  Iniciar(r3,9,11)
+  Iniciar(r2,9,10)
+  Iniciar(r1,9,9)
+fin    

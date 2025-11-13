@@ -1,0 +1,115 @@
+programa tp3ej5
+
+procesos
+  proceso asignarID
+  comenzar
+    EnviarMensaje(4,r4)
+    EnviarMensaje(3,r3)
+    EnviarMensaje(2,r2)
+    EnviarMensaje(1,r1)
+  fin
+  
+  proceso actualizarPos(ES ca:numero)
+  comenzar
+    ca:= PosCa
+  fin
+  
+  proceso recibirCoordenadas(ES ca:numero E id:numero)
+
+  comenzar
+    si(id = 1)
+      RecibirMensaje(ca,r1)
+    sino
+      si(id = 2)
+        RecibirMensaje(ca,r2)
+      sino
+        si(id = 3)
+          RecibirMensaje(ca,r3)
+        sino
+          si(id = 4)
+            RecibirMensaje(ca,r4)   
+  fin
+  
+  proceso actualizarMaximos(E id:numero ES idMax:numero ES ca:numero)
+  variables
+    auxC:numero
+  comenzar
+    recibirCoordenadas(auxC,id)
+    si(auxC > ca)
+      ca:= auxC
+      idMax:= id
+  fin  
+areas
+  area1: AreaP(4,1,4,100)
+  area2: AreaP(6,1,6,100)
+  area3: AreaP(8,1,8,100)
+  area4: AreaP(10,1,10,100)
+  fuente: AreaPC(11,11,11,11)
+  areaC: AreaP(2,1,2,1)
+  
+robots 
+  robot papelero
+  variables
+    id:numero
+    av,ca:numero
+    bucle: boolean
+  comenzar
+    av:= PosAv
+    actualizarPos(ca)
+    RecibirMensaje(id,rc)
+    bucle:= V
+    mientras((bucle) & (PosCa < 100))
+      BloquearEsquina(11,11)
+      Pos(11,11)
+      si(HayPapelEnLaEsquina)
+        tomarPapel
+        Pos(av,ca)
+        LiberarEsquina(11,11)
+        depositarPapel
+        mover
+        actualizarPos(ca)
+      sino
+        Pos(av,ca)
+        LiberarEsquina(11,11)
+        bucle:= F    
+    EnviarMensaje(id,rc)
+    EnviarMensaje(ca,rc)  
+    
+  fin
+  
+  robot coordinador
+  variables
+    id,idMax:numero
+    ca:numero
+  comenzar
+    idMax:= 0
+    ca:= PosCa
+    asignarID
+    repetir 4
+      RecibirMensaje(id,*)
+      actualizarMaximos(id,idMax,ca)
+    
+    Informar(idMax)
+  fin
+  
+variables
+  r1,r2,r3,r4:papelero  
+  rc:coordinador
+comenzar
+  AsignarArea(rc,areaC)
+  AsignarArea(r4,fuente)
+  AsignarArea(r3,fuente)
+  AsignarArea(r2,fuente)
+  AsignarArea(r1,fuente)
+  AsignarArea(r4,area4)
+  AsignarArea(r3,area3)
+  AsignarArea(r2,area2)
+  AsignarArea(r1,area1)
+  Iniciar(rc,2,1)
+  Iniciar(r4,10,1)
+  Iniciar(r3,8,1)
+  Iniciar(r2,6,1)
+  Iniciar(r1,4,1)
+fin    
+  
+  
